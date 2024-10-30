@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         ),
         home: MyHomePage(),
       ),
@@ -76,11 +76,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 extended: constraints.maxWidth >= 600,
                 destinations: [
                   NavigationRailDestination(
-                    icon: Icon(Icons.home),
+                    icon: Icon(Icons.home, color: Colors.blueAccent),
                     label: Text('Home'),
                   ),
                   NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
+                    icon: Icon(Icons.favorite, color: Colors.blueAccent),
                     label: Text('Favorites'),
                   ),
                 ],
@@ -128,18 +128,31 @@ class GeneratorPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  elevation: 6,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
                 onPressed: () {
                   appState.toggleFavorite();
                 },
-                icon: Icon(icon),
-                label: Text('Like'),
+                icon: Icon(icon, color: Colors.lightBlueAccent),
+                label: Text('Like', style: TextStyle(color: Colors.white)),
               ),
               SizedBox(width: 10),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                ),
                 onPressed: () {
                   appState.getNext();
                 },
-                child: Text('Next'),
+                child: Text('Next', style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
@@ -162,16 +175,26 @@ class BigCard extends StatelessWidget {
     final theme = Theme.of(context);
     final style = theme.textTheme.displayMedium!.copyWith(
       color: theme.colorScheme.onPrimary,
+      fontSize: 32,
+      fontWeight: FontWeight.bold,
     );
 
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 500),
+      transitionBuilder: (child, animation) =>
+          ScaleTransition(scale: animation, child: child),
+      child: Card(
+        key: ValueKey(pair),
+        color: Colors.blueAccent.withOpacity(0.9),
+        elevation: 6,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(30),
+          child: Text(
+            pair.asLowerCase,
+            style: style,
+            semanticsLabel: "${pair.first} ${pair.second}",
+          ),
         ),
       ),
     );
@@ -185,23 +208,19 @@ class FavoritesPage extends StatelessWidget {
 
     if (appState.favorites.isEmpty) {
       return Center(
-        child: Text('No favorites yet.'),
+        child: Text('No favorites yet.', style: TextStyle(fontSize: 18)),
       );
     }
 
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text('You have '
-              '${appState.favorites.length} favorites:'),
-        ),
-        for (var pair in appState.favorites)
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
-          ),
-      ],
+    return ListView.builder(
+      itemCount: appState.favorites.length,
+      itemBuilder: (context, index) {
+        var pair = appState.favorites[index];
+        return ListTile(
+          leading: Icon(Icons.favorite, color: Colors.blueAccent),
+          title: Text(pair.asLowerCase),
+        );
+      },
     );
   }
 }
