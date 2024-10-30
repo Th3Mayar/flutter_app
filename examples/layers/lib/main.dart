@@ -14,3 +14,17 @@ void main() {
     ),
   );
 }
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text(
+        'Hello, World!',
+        textDirection: TextDirection.ltr,
+      ),
+    );
+  }
+}
